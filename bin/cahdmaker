@@ -1,0 +1,34 @@
+#!/usr/bin/env ruby
+
+require 'cahdmaker'
+require 'optparse'
+
+options = {}
+card_type = :white
+output_file = nil
+
+parser = OptionParser.new do |opts|
+  opts.banner = "Usage: cahdmaker [options] <text>"
+
+  opts.on('-b', '--blanks [NUM]', "Number of underscores to use for a blank (8)") { |b| options[:blank_size] = b.to_i}
+  opts.on('-c', '--card [TYPE]', [:white, :black, :black2, :black3], "Select card type (white, black, black2, black3)") { |c| card_type = c }
+  opts.on('-f', '--font [FONT]', "Font (Helvetica-Bold)") { |f| options[:font] = f }
+  opts.on('-o', '--output [FILE]', "Output card to FILE (stdout)") { |o| output_file = o }
+  opts.on('-s', '--size [SIZE]', "Text size in points (60)") { |s| options[:text_size] = s }
+  opts.on_tail('-h', '--help', "Print help string and exit") { puts parser.help; exit }
+end
+parser.parse!
+
+if ARGV.length == 0
+  puts parser.help
+  exit
+end
+
+maker = Cahdmaker::Maker.new(options)
+maker.send(card_type, ARGV.join(' ')) do |card|
+  if output_file.nil?
+    $stdout.write(card.to_blob)
+  else
+    card.write(output_file)
+  end
+end

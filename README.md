@@ -1,6 +1,6 @@
 # Cahdmaker
 
-TODO: Write a gem description
+Create card images for use with a [party game for horrible people](http://cardsagainsthumanity.com).
 
 ## Installation
 
@@ -20,7 +20,28 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+### Code
+
+```ruby
+require 'cahdmaker'
+
+maker = Cahdmaker::Maker.new()
+
+# Generate in-memory card images as RMagick Magick::Image objects
+white_card = maker.white("31 flavors of hate")
+black_card = maker.black("I would have gotten away with it if it weren't for _.")
+pick2_card = maker.black2("I would have gotten away with _ if it weren't for _.")
+pick3_card = maker.black3("I would have gotten away with _ if it weren't for _ and _.")
+
+# Save image to file
+white_card.write('/path/to/white_card.png')
+
+# Grab image PNG data
+data = white_card.to_blob
+
+# Block-driven
+maker.white('31 flavors of hate') { |card| card.write('/path/to/white_card.png') }
+```
 
 ## Contributing
 
